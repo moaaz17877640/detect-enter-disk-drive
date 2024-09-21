@@ -33,7 +33,7 @@ import csv
 import json
 import time
 import datetime
-import configparser # import ConfigParser if you are using Python 2
+import configparser  # import ConfigParser if you are using Python 2
 import pyglet
 
 script_dir = os.path.dirname(__file__)
@@ -50,9 +50,8 @@ virus_en = pyglet.media.load(script_dir + '/audio/virus_en.mp3')
 # IT sounds
 dispositivo_scansione = pyglet.media.load(script_dir + '/audio/dispositivo_scansione.mp3')
 virus_it = pyglet.media.load(script_dir + '/audio/virus_it.mp3')
-#
+
 # Device change events (WM_DEVICECHANGE wParam)
-#
 DBT_DEVICEARRIVAL = 0x8000
 DBT_DEVICEQUERYREMOVE = 0x8001
 DBT_DEVICEQUERYREMOVEFAILED = 0x8002
@@ -61,18 +60,14 @@ DBT_DEVICEREMOVECOMPLETE = 0x8004
 DBT_DEVICETYPESSPECIFIC = 0x8005
 DBT_CONFIGCHANGED = 0x0018
 
-#
 # type of device in DEV_BROADCAST_HDR
-#
 DBT_DEVTYP_OEM = 0x00000000
 DBT_DEVTYP_DEVNODE = 0x00000001
 DBT_DEVTYP_VOLUME = 0x00000002
 DBT_DEVTYPE_PORT = 0x00000003
 DBT_DEVTYPE_NET = 0x00000004
 
-#
 # media types in DBT_DEVTYP_VOLUME
-#
 DBTF_MEDIA = 0x0001
 DBTF_NET = 0x0002
 
@@ -106,6 +101,7 @@ def drive_from_mask(mask):
         else:
             n_drive += 1
 
+
 def retrieve_vt_report(filename, md5, hashes):
     url = "https://www.virustotal.com/vtapi/v2/file/report"
     global api
@@ -115,7 +111,7 @@ def retrieve_vt_report(filename, md5, hashes):
     count = 1
     to_scan = []
     i = datetime.datetime.now()
-    file_to_open = "{day}-{month}-{year}_{hour}-{minute}_malware_scan.csv".format(day = i.day, month = i.month, year = i.year, hour = i.hour, minute = i.minute)
+    file_to_open = "{day}-{month}-{year}_{hour}-{minute}_malware_scan.csv".format(day=i.day, month=i.month, year=i.year, hour=i.hour, minute=i.minute)
     headers = ["filename", "md5", "positives", "permalink"]
     with open(file_to_open, "a") as f:
         f_csv = csv.writer(f)
@@ -134,7 +130,7 @@ def retrieve_vt_report(filename, md5, hashes):
                     if positives != 0:
                         if audio == "ON" and lang == "EN":
                             virus_en.play()
-                        elif audio =="ON" and lang == "IT":
+                        elif audio == "ON" and lang == "IT":
                             virus_it.play()
                         else:
                             pass
@@ -149,7 +145,8 @@ def retrieve_vt_report(filename, md5, hashes):
                 count += 1
     os.startfile(file_to_open)
 
-def md5_files(path, blocksize = 2**20):
+
+def md5_files(path, blocksize=2 ** 20):
     hashes = {}
     for root, dirs, files in os.walk(path):
         for file in files:
@@ -157,7 +154,7 @@ def md5_files(path, blocksize = 2**20):
             print(file_path)
             with open(file_path, "rb") as f:
                 data = f.read(blocksize)
-                hasher = hashlib.md5(data) # it's important to create a new MD5 object for every file
+                hasher = hashlib.md5(data)  # it's important to create a new MD5 object for every file
                 while data:
                     data = f.read(blocksize)
                     hasher.update(data)
@@ -193,13 +190,6 @@ class Notification:
         )
 
     def onDeviceChange(self, hwnd, msg, wparam, lparam):
-        #
-        # WM_DEVICECHANGE:
-        #  wParam - type of change: arrival, removal etc.
-        #  lParam - what's changed?
-        #    if it's a volume then...
-        #  lParam - what's changed more exactly
-        #
         dev_broadcast_hdr = DEV_BROADCAST_HDR.from_address(lparam)
         global audio
         global lang
@@ -219,10 +209,19 @@ class Notification:
                 letter_addendum = ":\\"
                 drive_letter_path = "".join([drive_letter, letter_addendum])
                 print(drive_letter_path)
-                md5_files(drive_letter_path)
 
+                # Password prompt
+                correct_password = 'admin222'
+                entered_password = input("Enter the password to start the scan: ")
+
+                # Check if the entered password is correct
+                if entered_password == correct_password:
+                    md5_files(drive_letter_path)
+                else:
+                    print("Incorrect password. Scan aborted.")
 
         return 1
+
 
 if __name__ == '__main__':
     w = Notification()
