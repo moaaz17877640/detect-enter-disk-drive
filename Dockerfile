@@ -1,13 +1,20 @@
-FROM python:3.7-slim
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim-buster
 
+# Set the working directory in the container
 WORKDIR /app
 
+# Copy the current directory contents into the container at /app
 COPY . /app
 
-RUN pip install virtualenv && \
-    virtualenv venv && \
-    . venv/bin/activate && \
-    pip install pyglet && \
-    if [ "$(uname -s)" = 'Linux' ]; then echo "Skipping pywin32 on Linux"; else pip install pywin32; fi
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
 CMD ["python", "was.py"]
