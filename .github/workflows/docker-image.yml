@@ -1,18 +1,22 @@
-name: Docker Image CI
 
+name: Docker
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
 
 jobs:
-
-  build:
-
+  # Run tests.
+  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v2
+
+      - name: Run tests
+        run: |
+            docker build . --file dockerfile -t  moaaz17877640/detect-enter-disk:v5
+            docker login -u ${{ secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+            docker push   moaaz17877640/detect-enter-disk:v5
