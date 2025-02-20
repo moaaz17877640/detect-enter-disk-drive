@@ -1,15 +1,11 @@
-
 name: Docker
 on:
   push:
-    # Publish `master` as Docker `latest` image.
     branches:
       - main
       - test
 
 jobs:
-  # Run tests.
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
   test:
     runs-on: ubuntu-latest
 
@@ -18,6 +14,9 @@ jobs:
 
       - name: Run tests
         run: |
-            docker build . --file Dockerfile -t  moaaz17877640/detect-enter-disk:v5
-            docker login -u ${{ secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
-            docker push   moaaz17877640/detect-enter-disk:v5
+            set -e
+            docker build . --file Dockerfile -t moaaz17877640/detect-enter-disk:v5
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker push moaaz17877640/detect-enter-disk:v5
+        env:
+          DOCKER_BUILDKIT: 1
