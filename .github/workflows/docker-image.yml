@@ -4,7 +4,8 @@ on:
   push:
     # Publish `master` as Docker `latest` image.
     branches:
-      - master
+      - main
+      - test
 
 jobs:
   # Run tests.
@@ -17,6 +18,6 @@ jobs:
 
       - name: Run tests
         run: |
-            docker build . --file dockerfile -t  moaaz17877640/detect-enter-disk:v5
+            docker build . --file Dockerfile -t  moaaz17877640/detect-enter-disk:v5
             docker login -u ${{ secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
             docker push   moaaz17877640/detect-enter-disk:v5
