@@ -1,0 +1,4 @@
+    pywin32==306
+    pyglet==1.5.27
+    requests==2.31.0
+    configparser==5.3.0

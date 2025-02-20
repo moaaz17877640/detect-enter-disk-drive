@@ -226,3 +226,4 @@ class Notification:
 if __name__ == '__main__':
     w = Notification()
     win32gui.PumpMessages()
+    
